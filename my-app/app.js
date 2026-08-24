@@ -34,7 +34,7 @@ var app = express();
 
 // ตั้งค่า CORS ให้รองรับ Frontend Domain
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://test2-bay-mu.vercel.app'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://littleboy-one.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // 👈 เปิดไว้นะครับ เพื่อป้องกันไม่ให้เจอตาราง CORS Error ตัวนี้อีก
