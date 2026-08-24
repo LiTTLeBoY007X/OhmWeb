@@ -16,7 +16,12 @@ function UserRegister() {
   const SubmitButton = async (e) => {
     e.preventDefault();
     if (Tel.length !== 10) {
-      alert("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
+      Swal.fire({
+        icon: "error",
+        title: "แจ้งเตือน",
+        text: "กรุณากรอกเบอร์ให้ครบ 10 หลัก",
+        confirmButtonText: "ตกลง",
+      });
       return;
     }
     try {
@@ -33,25 +38,31 @@ function UserRegister() {
         window.location.href = response.data.redirectUrl || "/";
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้";
+      const errorMessage = error.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้";
       console.error("Register Error:", errorMessage);
 
       // กรณีเบอร์โทรซ้ำ (Status 409) ถามผู้ใช้เพื่อนำทางไปหน้า Login
       if (error.response?.status === 409) {
-        const goToLogin = window.confirm(
-          `${errorMessage}\n\nต้องการไปหน้าเข้าสู่ระบบตอนนี้เลยหรือไม่?`,
-        );
-        if (goToLogin) {
-          window.location.href = "/login";
-        }
+        Swal.fire({
+          icon: "warning",
+          title: "แจ้งเตือน",
+          text: `${errorMessage}\nต้องการไปหน้าเข้าสู่ระบบตอนนี้เลยหรือไม่?`,
+          showCancelButton: true,
+          confirmButtonText: "ไปหน้าเข้าสู่ระบบ",
+          cancelButtonText: "ยกเลิก",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/login";
+          }
+        });
       } else {
-        const err = error.response?.data?.message;
-
+        // กรณี Error อื่นๆ (เช่น 500, 400 หรือเชื่อมต่อไม่ได้)
         Swal.fire({
           icon: "error",
           title: "แจ้งเตือน",
-          text: err,
+          text: errorMessage,
           confirmButtonText: "ตกลง",
         });
       }
@@ -65,14 +76,9 @@ function UserRegister() {
         <h1 className="mb-[20px] text-2xl text-[#56ce52]">สมัครบัญชีผู้ใช้</h1>
         <form
           className="Register-form border-b-[0.5px] flex-initial flex-col items-center w-full"
-          onSubmit={SubmitButton}
-        >
+          onSubmit={SubmitButton}>
           <div className="UserName-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img
-              src={shieldUserIcon}
-              className="w-[40px] bg-[#CDFFE1] rounded-xl p-1"
-              alt="User Icon"
-            />
+            <img src={shieldUserIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="User Icon" />
             <input
               className="p-2 focus:outline-none w-full"
               type="text"
@@ -82,11 +88,7 @@ function UserRegister() {
             />
           </div>
           <div className="PhoneNumber-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img
-              src={callChatIcon}
-              className="w-[40px] bg-[#CDFFE1] rounded-xl p-1"
-              alt="Phone Icon"
-            />
+            <img src={callChatIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Phone Icon" />
             <input
               className="p-2 focus:outline-none w-full"
               type="tel"
@@ -101,11 +103,7 @@ function UserRegister() {
             />
           </div>
           <div className="PassWord-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img
-              src={keySquareIcon}
-              className="w-[40px] bg-[#CDFFE1] rounded-xl p-1"
-              alt="Key Icon"
-            />
+            <img src={keySquareIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Key Icon" />
             <input
               className="p-2 focus:outline-none w-full"
               type="password"

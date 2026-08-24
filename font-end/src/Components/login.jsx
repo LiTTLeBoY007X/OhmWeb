@@ -13,7 +13,12 @@ function UserLogin() {
   const SubmitButton = async (e) => {
     e.preventDefault();
     if (TelLogin.length !== 10) {
-      alert("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
+      Swal.fire({
+        icon: "warning",
+        title: "แจ้งเตือน",
+        text: "กรุณากรอกเบอร์ให้ครบ 10 หลัก",
+        confirmButtonText: "ตกลง",
+      });
       return;
     }
     try {
@@ -52,14 +57,9 @@ function UserLogin() {
         <h1 className="mb-[20px] text-2xl text-[#56ce52]">เข้าสู่ระบบ</h1>
         <form
           className="Register-form border-b-[0.5px] flex-initial flex-col items-center w-full"
-          onSubmit={SubmitButton}
-        >
+          onSubmit={SubmitButton}>
           <div className="PhoneNumber-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img
-              src={callChatIcon}
-              className="w-[40px] bg-[#CDFFE1] rounded-xl p-1"
-              alt="Phone Icon"
-            />
+            <img src={callChatIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Phone Icon" />
             <input
               className="p-2 focus:outline-none w-full"
               type="tel"
@@ -74,11 +74,7 @@ function UserLogin() {
             />
           </div>
           <div className="PassWord-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img
-              src={keySquareIcon}
-              className="w-[40px] bg-[#CDFFE1] rounded-xl p-1"
-              alt="Key Icon"
-            />
+            <img src={keySquareIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Key Icon" />
             <input
               className="p-2 focus:outline-none w-full"
               type="password"

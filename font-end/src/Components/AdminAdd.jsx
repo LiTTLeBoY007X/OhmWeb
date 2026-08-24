@@ -46,9 +46,16 @@ function AddPoint() {
         tel: TelAdd,
         point: Point,
       });
-      console.log(res.data.message);
-      alert(res.data.message);
-      window.location.reload();
+      Swal.fire({
+        icon: "success",
+        title: "แจ้งเตือน",
+        text: res.data.message,
+        confirmButtonText: "ตกลง",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        } // เปลี่ยนหน้าหลังจากผู้ใช้กดปุ่มตกลงแล้วเท่านั้น
+      });
     } catch (error) {
       const err = error.response?.data?.message;
 
