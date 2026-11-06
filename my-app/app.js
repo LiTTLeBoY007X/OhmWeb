@@ -10,6 +10,14 @@ const mongoose = require('mongoose');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+const requiredEnvVars = ["MONGODB_URI", "USER_ID_KEYJWT", "USER_ID_KEYADMIN"];
+const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
+if (missingEnvVars.length > 0) {
+  throw new Error(
+    `Missing required environment variables: ${missingEnvVars.join(", ")}. Copy .env.example to .env and fill in the values.`,
+  );
+}
+
 // เชื่อมต่อ Database
 const dbShoplist = mongoose.createConnection(MONGODB_URI, { dbName: 'Shoplist' });
 const dbUserID = mongoose.createConnection(MONGODB_URI, { dbName: 'User_ID_PASS' });
@@ -23,6 +31,8 @@ dbShoplist.on('error', (err) => console.error('❌ DB Shoplist ล้มเห�
 // เช็กสถานะของ dbUserID
 dbUserID.on('connected', () => console.log('✅ เชื่อมต่อ DB: User_ID_PASS สำเร็จ!'));
 dbUserID.on('error', (err) => console.error('❌ DB User_ID_PASS ล้มเหลว:', err));
+
+
 dbHistory.on('connected', () => console.log('✅ เชื่อมต่อ DB: HistoryUser สำเร็จ!'));
 dbHistory.on('error', (err) => console.error('❌ DB HistoryUser ล้มเหลว:', err));
 
@@ -34,7 +44,7 @@ var app = express();
 
 // ตั้งค่า CORS ให้รองรับ Frontend Domain
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://littleboy-one.vercel.app'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://test2-bay-mu.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // 👈 เปิดไว้นะครับ เพื่อป้องกันไม่ให้เจอตาราง CORS Error ตัวนี้อีก

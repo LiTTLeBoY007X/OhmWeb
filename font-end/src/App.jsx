@@ -1,5 +1,5 @@
 axios.defaults.withCredentials = true;
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import axios from 'axios';
 import UserRegister from './Components/register';
 import UserLogin from './Components/login';

@@ -13,12 +13,7 @@ function UserLogin() {
   const SubmitButton = async (e) => {
     e.preventDefault();
     if (TelLogin.length !== 10) {
-      Swal.fire({
-        icon: "warning",
-        title: "แจ้งเตือน",
-        text: "กรุณากรอกเบอร์ให้ครบ 10 หลัก",
-        confirmButtonText: "ตกลง",
-      });
+      alert("กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก");
       return;
     }
     try {
@@ -50,18 +45,20 @@ function UserLogin() {
     }
   };
 
+
   return (
-    <div className="Register-Container flex flex-col items-center h-screen">
-      <img className="max-h-[40%]" src={logoWeb} alt="Logo" />
-      <div className="flex-initial flex-col items-center text-center justify-items-center bg-[#F2FFF7] w-[85%] p-[20px] pl-[30px] pr-[30px] rounded-4xl max-w-[400px] shadow-[-3px_0px_54px_-7px_#000000]">
-        <h1 className="mb-[20px] text-2xl text-[#56ce52]">เข้าสู่ระบบ</h1>
+    <div className="Register-Container flex min-h-screen flex-col items-center justify-center gap-4 px-5 py-8">
+      <img className="max-h-[25vh] max-w-[260px] object-contain" src={logoWeb} alt="Logo" />
+      <div className="w-full max-w-[420px] rounded-[2rem] border border-white/80 bg-white/85 p-7 text-center shadow-[0_24px_80px_-45px_rgba(18,70,47,0.45)] backdrop-blur-xl sm:p-9">
+        <p className="mb-1 text-sm font-medium text-emerald-800/60">ยินดีต้อนรับกลับ</p>
+        <h1 className="mb-7 text-3xl font-semibold tracking-tight text-[#174b37]">เข้าสู่ระบบ</h1>
         <form
           className="Register-form border-b-[0.5px] flex-initial flex-col items-center w-full"
           onSubmit={SubmitButton}>
           <div className="PhoneNumber-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img src={callChatIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Phone Icon" />
+            <img src={callChatIcon} className="w-11 rounded-xl bg-[#e4f4e8] p-2" alt="Phone Icon" />
             <input
-              className="p-2 focus:outline-none w-full"
+              className="w-full bg-transparent p-3 outline-none"
               type="tel"
               placeholder="เบอร์โทร"
               value={TelLogin}
@@ -74,9 +71,9 @@ function UserLogin() {
             />
           </div>
           <div className="PassWord-Form-Input-Container shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
-            <img src={keySquareIcon} className="w-[40px] bg-[#CDFFE1] rounded-xl p-1" alt="Key Icon" />
+            <img src={keySquareIcon} className="w-11 rounded-xl bg-[#e4f4e8] p-2" alt="Key Icon" />
             <input
-              className="p-2 focus:outline-none w-full"
+              className="w-full bg-transparent p-3 outline-none"
               type="password"
               value={Password}
               placeholder="รหัสผ่าน"
@@ -85,16 +82,16 @@ function UserLogin() {
               }}
             />
           </div>
-          <div className="Button-Form-Input-Container bg-[#11c140] shadow-[0px_0px_20px_-14px_#000000] mb-3 rounded-xl flex justify-start">
+          <div className="Button-Form-Input-Container mb-3 flex justify-start rounded-xl bg-[#174b37] shadow-sm transition hover:bg-[#226447]">
             <input
-              className="p-2 focus:outline-none text-center w-full text-white cursor-pointer"
+              className="w-full cursor-pointer p-3 text-center font-medium text-white outline-none"
               type="submit"
               value="เข้าสู่ระบบ"
             />
           </div>
         </form>
         <div className="login-link">
-          <a href="/register" className="hover:cursor-pointer text-blue-500">
+          <a href="/register" className="font-medium text-emerald-800 hover:text-emerald-600">
             สมัครบัญชี
           </a>
         </div>

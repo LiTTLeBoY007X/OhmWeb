@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 * {
+  box-sizing: border-box;
   font-family: 'Kanit', sans-serif !important;
 }
 
@@ -10,13 +11,24 @@ html, body, #root {
   margin: 0;
   padding: 0;
 }
-body {
 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    background-image: url('./assets/IMG_2261.jpg');
-    background-attachment: fixed;
-    
-}   
+body {
+  min-height: 100vh;
+  color: #173b2c;
+  background:
+    linear-gradient(145deg, rgb(245 248 241 / 76%), rgb(237 245 237 / 78%) 48%, rgb(245 243 232 / 80%)),
+    url('./assets/IMG_2261.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+button, a, input, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid #6fcf97;
+  outline-offset: 3px;
+}

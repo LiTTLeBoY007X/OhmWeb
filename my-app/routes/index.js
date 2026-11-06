@@ -159,15 +159,28 @@ router.post("/user/login", async (req, res, next) => {
 });
 
 // 4. Shop API (คงเดิม)
-router.post("/shop", async (req, res) => {
+router.post("/shop", verifyToken, async (req, res) => {
   try {
+    const UserID = req.app.get("UserID");
+    const user = await UserID.findById(req.user.userId).select("role");
+    if (!user || user.role !== process.env.USER_ID_KEYADMIN) {
+      return res.status(403).json({ message: "ไม่มีสิทธิ์เข้าถึง" });
+    }
     const Shoplist = req.app.get("Shoplist");
-    const { nameShop_text, amount_1, price_1 } = req.body;
+    const { nameShop_text, amount_1, price_1, imageName } = req.body;
+
+    if (typeof nameShop_text !== "string" || !nameShop_text.trim()) {
+      return res.status(400).json({ message: "กรุณากรอกชื่อสินค้า" });
+    }
+    if (typeof imageName !== "string" || !/^[\w-]+\.(jpg|png|webp|gif)$/i.test(imageName)) {
+      return res.status(400).json({ message: "ชื่อไฟล์รูปไม่ถูกต้อง" });
+    }
 
     const newShop = new Shoplist({
-      nameShop_text,
-      amount_1,
-      price_1,
+      nameShop_text: nameShop_text.trim(),
+      amount_1: Math.max(0, Number(amount_1) || 0),
+      price_1: Math.max(0, Number(price_1) || 0),
+      imageName,
     });
 
     const savedShop = await newShop.save();
@@ -187,6 +200,30 @@ router.get("/shopPreviews", async (req, res) => {
   }
 });
 
+router.put("/shop/:id/image", verifyToken, async (req, res) => {
+  try {
+    const UserID = req.app.get("UserID");
+    const user = await UserID.findById(req.user.userId).select("role");
+    if (!user || user.role !== process.env.USER_ID_KEYADMIN) {
+      return res.status(403).json({ message: "ไม่มีสิทธิ์เข้าถึง" });
+    }
+    const imageName = req.body.imageName;
+    if (typeof imageName !== "string" || !/^[\w-]+\.(jpg|png|webp|gif)$/i.test(imageName)) {
+      return res.status(400).json({ message: "ชื่อไฟล์รูปไม่ถูกต้อง" });
+    }
+    const Shoplist = req.app.get("Shoplist");
+    const shop = await Shoplist.findByIdAndUpdate(
+      req.params.id,
+      { $set: { imageName } },
+      { new: true, runValidators: true },
+    );
+    if (!shop) return res.status(404).json({ message: "ไม่พบสินค้า" });
+    res.status(200).json(shop);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.post("/shopbuyID", verifyToken, async (req, res, next) => {
   try {
     const UserID = req.app.get("UserID");
@@ -197,10 +234,10 @@ router.post("/shopbuyID", verifyToken, async (req, res, next) => {
     );
     const itemBuyID = await Shoplist.findOne({ _id: req.body.idshoplist });
     if (itemBuyID.amount_1 == 0) {
-      return res.status(400).json({ message: "ของหมด" });
+      return res.status(400).json({ message: "สินค้าหมด" });
     }
     if (UserIdBuy.point < itemBuyID.price_1) {
-      return res.status(400).json({ message: "พอยไม่พอแลก" });
+      return res.status(400).json({ message: "แต้มไม่เพียงพอสำหรับแลกสินค้า" });
     }
     const pointBuy = Number(UserIdBuy.point) - Number(itemBuyID.price_1);
 
@@ -232,7 +269,7 @@ router.post("/shopbuyID", verifyToken, async (req, res, next) => {
     console.log(itemBuyID);
     console.log(UserIdBuy);
     console.log(pointBuy);
-    res.status(200).json({ message: "แลกพอยสำเร็จ" });
+    res.status(200).json({ message: "แลกสินค้าเรียบร้อยแล้ว" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -257,7 +294,7 @@ router.post("/useraddpointpost", async (req, res, next) => {
       user_id: teluser._id, // ObjectId ของ User
       type: "earn", // "earn" หรือ "redeem"
       amount: Number(req.body.point), // จำนวนแต้ม (เช่น 100)
-      description: "ได้รับพอย", // รายละเอียด เช่น "ได้รับแต้มจากการซื้อสินค้า"
+      description: "ได้รับแต้ม", // รายละเอียด เช่น "ได้รับแต้มจากการซื้อสินค้า"
     });
     res.status(200).json({ message: "ให้แต้มสำเร็จ" });
   } catch (error) {

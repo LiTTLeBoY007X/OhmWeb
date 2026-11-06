@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -10,8 +10,7 @@ function AddPoint() {
   const [Point, setPoing] = useState();
 
   const navigate = useNavigate();
-  const isCalled = useRef(false); // 👈 1. สร้างตัวแปรเช็กสถานะ
-  async function AutnAdmin() {
+  const AutnAdmin = useCallback(async () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`${API_URL}/check-auth-admin-service`, {
@@ -32,13 +31,11 @@ function AddPoint() {
         navigate("/", { replace: true }); // เปลี่ยนหน้าหลังจากผู้ใช้กดปุ่มตกลงแล้วเท่านั้น
       });
     }
-  }
+  }, [navigate]);
 
   useEffect(() => {
-    if (isCalled.current) return; // 👈 2. ถ้าเคยยิงไปแล้ว ให้ข้ามทันที
-    isCalled.current = true; // 👈 3. ล็อคว่ายิงไปแล้ว
     AutnAdmin();
-  }, []);
+  }, [AutnAdmin]);
 
   async function Addpointuser() {
     try {
@@ -46,16 +43,9 @@ function AddPoint() {
         tel: TelAdd,
         point: Point,
       });
-      Swal.fire({
-        icon: "success",
-        title: "แจ้งเตือน",
-        text: res.data.message,
-        confirmButtonText: "ตกลง",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        } // เปลี่ยนหน้าหลังจากผู้ใช้กดปุ่มตกลงแล้วเท่านั้น
-      });
+      console.log(res.data.message);
+      alert(res.data.message);
+      window.location.reload();
     } catch (error) {
       const err = error.response?.data?.message;
 
@@ -69,37 +59,47 @@ function AddPoint() {
   }
 
   return (
-    <div className="flex justify-center items-center h-dvh ">
-      <div className="bg-white flex items-center flex-col justify-center w-[300px] rounded-2xl p-[20px]">
-        <div className="flex items-center flex-col justify-center gap-[20px]">
-          <h1 className="">เบอร์ที่จะให้แต้ม</h1>
+    <div className="min-h-screen pb-28">
+      <header className="mx-auto max-w-xl px-5 pb-5 pt-10 sm:px-8 sm:pt-14">
+        <p className="text-sm font-medium tracking-wide text-emerald-800/60">สมาชิกคนพิเศษ</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">เพิ่มแต้มให้สมาชิก</h1>
+      </header>
+      <main className="mx-auto max-w-xl px-5 sm:px-8">
+      <div className="rounded-[1.75rem] border border-emerald-950/5 bg-white/85 p-6 shadow-[0_18px_50px_-42px_rgba(20,60,40,0.5)] sm:p-8">
+        <div className="flex flex-col gap-5">
+          <label className="flex flex-col gap-2 text-sm font-medium text-emerald-950">
+            เบอร์โทรศัพท์ผู้รับแต้ม
           <input
-            className="w-[90%] h-[30px] border-[0.1px] rounded-xl focus:outline-none pl-[10px]"
+            className="w-full rounded-xl border border-emerald-950/10 bg-[#f8faf6] px-4 py-3 outline-none transition focus:border-emerald-700"
             type="tel"
-            placeholder="เบอร์โทร"
+            placeholder="เบอร์โทรศัพท์"
             onChange={(e) => {
               setTelAdd(e.target.value);
             }}
           />
-          <h1 className="">แต้มที่จะให้</h1>
+          </label>
+          <label className="flex flex-col gap-2 text-sm font-medium text-emerald-950">
+            จำนวนแต้ม
           <input
-            className="w-[90%] h-[30px] border-[0.1px] rounded-xl focus:outline-none pl-[10px]"
+            className="w-full rounded-xl border border-emerald-950/10 bg-[#f8faf6] px-4 py-3 outline-none transition focus:border-emerald-700"
             type="number"
-            placeholder="แต้มที่จะให้"
+            min="1"
+            placeholder="กรอกจำนวนแต้ม"
             onChange={(e) => {
               setPoing(e.target.value);
             }}
           />
-          <input
-            className=" bg-green-400 w-[100px] h-[40px] rounded-2xl"
-            type="submit"
-            value="ให้พอย"
+          </label>
+          <button
+            className="mt-2 w-full rounded-xl bg-[#174b37] px-4 py-3 font-medium text-white transition hover:bg-[#226447]"
+            type="button"
             onClick={() => {
               Addpointuser();
             }}
-          />
+          >เพิ่มแต้ม</button>
         </div>
       </div>
+      </main>
       <AdminNav />
     </div>
   );
